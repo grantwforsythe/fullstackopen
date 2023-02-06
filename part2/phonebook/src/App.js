@@ -1,31 +1,40 @@
 import { useState } from 'react';
 
 import './App.css';
-import Person from './components/Person';
+import Filter from './components/Filter';
+import Persons from './components/Persons';
+import PersonForm from './components/PersonForm';
 
 const App = () => {
   const [persons, setPersons] = useState([
-    {
-      id: 1,
-      name: 'Arto Hellas',
-      number: '(012) 345-6789'
-    },
+    { name: 'Arto Hellas', number: '040-123456', id: 1 },
+    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
+    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
+    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 } 
   ]);
+  const [filter, setFilter] = useState('');
   const [newName, setNewName] = useState('');
   const [newPhone, setNewPhone] = useState('');
 
+  const handleFilter = (event) => {
+    console.log('filter: ', event.target.value);
+    setFilter(event.target.value);
+  };
+
   const handleNewName = (event) => {
-    console.log(event.target.value);
+    console.log('New name: ', event.target.value);
     setNewName(event.target.value);
   };
 
   const handleNewPhone = (event) => {
-    console.log(event.target.value);
+    console.log('New phone: ', event.target.value);
     setNewPhone(event.target.value);
   };
 
   const addPerson = (event) => {
     event.preventDefault();
+
+    console.log(persons.length);
 
     // Send an alert if the name is already in the phonebook
     if (persons.filter(person => person.name === newName).length > 0) {
@@ -36,11 +45,13 @@ const App = () => {
     }
     else {
       setPersons(persons.concat({
-        id: persons.length,
+        id: ++persons.length,
         name: newName,
         number: newPhone
       }));
     }
+
+    console.log(persons.length);
 
     setNewName('');
     setNewPhone('');
@@ -48,47 +59,24 @@ const App = () => {
 
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h2>Filter</h2>
+      <Filter
+       filter={filter}
+       handleFilter={handleFilter}
+      />
       <h2>Add a New Person</h2>
-      <form>
-        <div>
-          <label for='name'>Name: </label>
-          <input
-            type='text'
-            name='name'
-            placeholder='John Smith'
-            value={newName}
-            onChange={handleNewName}
-            />
-        </div>
-        <div>
-          <label for='phone'>Number: </label>
-          <input
-            type='tel'
-            placeholder='(012) 345-6789'
-            value={newPhone}
-            onChange={handleNewPhone}
-          />
-        </div>
-        <div>
-          <button
-            type='submit'
-            onClick={addPerson}
-          >
-            Add
-          </button>
-        </div>
-      </form>
+      <PersonForm
+        newName={newName}
+        handleNewName={handleNewName}
+        newPhone={newPhone}
+        handleNewPhone={handleNewPhone}
+        addPerson={addPerson}
+      />
       <h2>Numbers</h2>
-      <ul class='numbers'>
-        {persons.map(person => {
-          return <Person
-            key={person.id}
-            name={person.name}
-            number={person.number}
-          />;
-        })}
-      </ul>
+      <Persons
+        persons={persons}
+        filter={filter}
+      />
     </div>
   );
 };
