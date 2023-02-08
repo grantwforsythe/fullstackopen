@@ -1,11 +1,23 @@
-import { useState } from 'react'
-import Note from './components/Note';
+import axios from 'axios';
+import { useEffect, useState } from 'react'
 
-const App = (props) => {
-  const [notes, setNotes] = useState(props.notes);
+import Notes from './components/Notes';
+import NoteForm from './components/NoteForm';
+
+const App = () => {
+  const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState('');
   const [isImportant, setIsImportant] = useState(false);
   const [showAll, setShowAll] = useState(true);
+
+  // Run whenever the component is rerendered
+  // The empty array indicates that this is only run once
+  // the component is initially rendered
+  useEffect(() => {
+    axios
+      .get('http://localhost:3001/notes')
+      .then(response => setNotes(response.data));
+  }, []);
 
   const notesToShow = showAll
     ? notes
@@ -46,41 +58,14 @@ const App = (props) => {
           show {showAll ? 'important' : 'all'}
         </button>
       </div>
-      <ul>
-        {notesToShow.map(note => 
-          <Note key={note.id} note={note} />
-        )}
-      </ul>
-      <form onSubmit={addNote}>
-        {/*
-          The input element is referred to as a controller component
-          
-          Since we assigned a piece of the App component's state as
-          the value attribute of the input element, the App component
-          now controls the behavior of the input element.
-
-          We need to have the checkbox first since it is updating the
-          isImportant state.
-        */}
-        <label for='important'>Important: </label>
-        <input
-          type='checkbox'
-          name='important'
-          value={isImportant}
-          onChange={handleImportant}
-        />
-        <br></br>
-        <label for='note'>New note: </label>
-        <input
-          type='text'
-          name='note'
-          placeholder='Add a note'
-          value={newNote}
-          onChange={handleNoteChange}
-        />
-        <br></br>
-        <button type="submit">Add note</button>
-      </form>
+      <Notes notesToShow={notesToShow} />
+      <NoteForm
+        addNote={addNote}
+        isImportant={isImportant}
+        handleImportant={handleImportant}
+        newNote={newNote}
+        handleNoteChange={handleNoteChange}
+      />
     </div>
   );
 };
