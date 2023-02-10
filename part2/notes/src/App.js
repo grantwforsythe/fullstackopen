@@ -17,9 +17,9 @@ const App = () => {
   // The empty array indicates that this is only run once
   // the component is initially rendered
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/notes')
-      .then(response => setNotes(response.data));
+    noteService
+      .getAll()
+      .then(initialNotes => setNotes(initialNotes));
   }, []);
 
   const notesToShow = showAll
@@ -27,17 +27,17 @@ const App = () => {
     : notes.filter(note => note.important);
 
   const toggleImportanceOf = (id) => {
-    const url = `http://localhost:3001/notes/${id}`;
     // IMPORTANT: You never want to mutate the state of a component directly
     // Important: This is not a copy of the note, but a reference to the actual note in memory
     const note = notes.find(n => n.id === id);
+    // This only creates a shallow copy (nested objects will just be references to the original objects)
     const changedNode = { ...note, important: !note.important };
 
-    axios
-      .put(url, changedNode)
-      .then(response => {
+    noteService
+      .update(id, changedNode)
+      .then(returnedNote => {
         // Only update the note with the same id
-        setNotes(notes.map(n => n.id !== id ? n : response.data));
+        setNotes(notes.map(n => n.id !== id ? n : returnedNote));
       });
   };
 
@@ -51,10 +51,10 @@ const App = () => {
       important: isImportant,
     };
 
-    axios
-      .post('http://localhost:3001/notes', note)
-      .then(response => {
-        setNotes(notes.concat(response.data));
+    noteService
+      .create(note)
+      .then(returnedNote => {
+        setNotes(notes.concat(returnedNote));
         setNewNote('');
       });
   };
@@ -84,6 +84,7 @@ const App = () => {
           <Note
             key={note.id}
             note={note}
+            // toggleImportance={() => toggleImportanceOf(note.id)}
             toggleImportance={() => toggleImportanceOf(note.id)}
           />
         )}
