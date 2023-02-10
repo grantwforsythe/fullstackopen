@@ -8,15 +8,21 @@ import noteService from './services/notes';
 import './App.css'
 
 const App = () => {
+  // Everytime a state is updated, the component is rerendered
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState('');
   const [isImportant, setIsImportant] = useState(false);
   const [showAll, setShowAll] = useState(true);
 
-  // Run whenever the component is rerendered
-  // The empty array indicates that this is only run once
-  // the component is initially rendered
+  // This is just to indicated when the component has rendered
+  console.log('render');
+
+  // Run whenever a state changes
+  // The empty array indicates that this is only run once the component is initially rendered
+  // (The initial render of a component is referred to as 'mounting')  
+  // A hook is just a sideeffect when something happens
   useEffect(() => {
+    console.log('Calling useEffect');
     noteService
       .getAll()
       .then(initialNotes => setNotes(initialNotes));
@@ -84,7 +90,6 @@ const App = () => {
           <Note
             key={note.id}
             note={note}
-            // toggleImportance={() => toggleImportanceOf(note.id)}
             toggleImportance={() => toggleImportanceOf(note.id)}
           />
         )}
