@@ -1,8 +1,11 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react'
 
 import Note from './components/Note';
 import NoteForm from './components/NoteForm';
+
+import noteService from './services/notes';
+
+import './App.css'
 
 const App = () => {
   const [notes, setNotes] = useState([]);
