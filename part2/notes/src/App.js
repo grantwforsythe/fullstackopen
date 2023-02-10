@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react'
 
-import Notes from './components/Notes';
+import Note from './components/Note';
 import NoteForm from './components/NoteForm';
 
 const App = () => {
@@ -23,19 +23,37 @@ const App = () => {
     ? notes
     : notes.filter(note => note.important);
 
+  const toggleImportanceOf = (id) => {
+    const url = `http://localhost:3001/notes/${id}`;
+    // IMPORTANT: You never want to mutate the state of a component directly
+    // Important: This is not a copy of the note, but a reference to the actual note in memory
+    const note = notes.find(n => n.id === id);
+    const changedNode = { ...note, important: !note.important };
+
+    axios
+      .put(url, changedNode)
+      .then(response => {
+        // Only update the note with the same id
+        setNotes(notes.map(n => n.id !== id ? n : response.data));
+      });
+  };
+
   const addNote = (event) => {
     // The default action belonging to the event will not occur
     // i.e., The submit button of the form will not be submitted which would cause the page to reload
     event.preventDefault();
 
     const note = {
-      id: notes.length + 1,
       content: newNote,
       important: isImportant,
     };
 
-    setNotes(notes.concat(note));
-    setNewNote('');
+    axios
+      .post('http://localhost:3001/notes', note)
+      .then(response => {
+        setNotes(notes.concat(response.data));
+        setNewNote('');
+      });
   };
 
   // Syncs the changes made to the input with the component's state
@@ -58,7 +76,15 @@ const App = () => {
           show {showAll ? 'important' : 'all'}
         </button>
       </div>
-      <Notes notesToShow={notesToShow} />
+      <ul>
+        {notesToShow.map(note => 
+          <Note
+            key={note.id}
+            note={note}
+            toggleImportance={() => toggleImportanceOf(note.id)}
+          />
+        )}
+      </ul>
       <NoteForm
         addNote={addNote}
         isImportant={isImportant}
