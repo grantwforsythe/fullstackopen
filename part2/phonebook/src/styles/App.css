@@ -1,0 +1,12 @@
+ul.numbers li {
+    list-style-type: none;
+    margin-left: -40px;
+}
+
+li > button {
+    margin-left: 5px;
+}
+
+li > button:hover {
+    color: red;
+}

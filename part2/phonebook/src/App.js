@@ -1,10 +1,11 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-import './App.css';
 import Filter from './components/Filter';
 import Persons from './components/Persons';
 import PersonForm from './components/PersonForm';
+import personServices from './services/persons';
+
+import './styles/App.css';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -13,9 +14,9 @@ const App = () => {
   const [newPhone, setNewPhone] = useState('');
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => setPersons(response.data));
+    personServices
+      .getAll()
+      .then(initialPersons => setPersons(initialPersons));
   }, []);
 
   const handleFilter = (event) => {
@@ -33,28 +34,66 @@ const App = () => {
     setNewPhone(event.target.value);
   };
 
+  const handleDelete = (id, name) => {
+    if (window.confirm(`Delete ${name}`)) {
+      personServices.deletePerson(id);
+      // Remove the deleted person from the state
+      setPersons(persons.filter(person => person.id !== id));
+    }
+  };
+
   const addPerson = (event) => {
     event.preventDefault();
 
-    console.log(persons.length);
-
-    // Send an alert if the name is already in the phonebook
-    if (persons.filter(person => person.name === newName).length > 0) {
-      alert(`${newName} is already in the phonebook`);
-    }
-    else if (persons.filter(person => person.number === newPhone).length > 0) {
+    // Send an alert if the number is already in the phonebook
+    if (persons.filter(person => person.number === newPhone).length > 0) {
       alert(`${newPhone} is already in the phonebook`);
     }
+    // Prompt the user to update a phone number for a person
+    else if (persons.filter(person => person.name === newName).length > 0) {
+      const statement = `
+        ${newName} is already in the phonebook,
+        replace the old number with a new one?
+      `;
+
+      if (window.confirm(statement)) {
+        // Like filter but returns the first element that matches the condtion instead of a new array
+        const person = persons.find(person => person.name === newName);
+        updatePerson(person);
+      }
+    }
     else {
-      setPersons(persons.concat({
-        id: ++persons.length,
+      const newPerson = {
         name: newName,
         number: newPhone
-      }));
+      };
+
+      personServices
+        .create(newPerson)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+        });
     }
 
     setNewName('');
     setNewPhone('');
+  };
+
+  const updatePerson = (person) => {
+    const updatedPerson = {
+      ...person,
+      number: newPhone
+    };
+
+    personServices
+      .update(person.id, updatedPerson)
+      .then(returnedPerson => {
+        setPersons(persons.map(p => p.id !== person.id ? p: returnedPerson));
+      })
+      .catch(error => {
+        alert(`${person.name} has already been deleted from the phonebook`);
+        setPersons(persons.filter(p => p.id !== person.id));
+      });
   };
 
   return (
@@ -76,6 +115,7 @@ const App = () => {
       <Persons
         persons={persons}
         filter={filter}
+        handleDelete={handleDelete}
       />
     </div>
   );

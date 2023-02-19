@@ -1,18 +1,19 @@
 import Person from './Person';
 
-const Persons = ({ persons, filter }) => {
+const Persons = ({ persons, filter, handleDelete }) => {
   return (
     <>
       <ul class='numbers'>
         {persons
+          // Case-insensitive match by filter
           .filter(person => {
             return person.name.toLowerCase().includes(filter.toLowerCase());
           })
           .map(person => {
             return <Person
               key={person.id}
-              name={person.name}
-              number={person.number}
+              person={person}
+              handleDelete={handleDelete}
             />;
           })
         }
