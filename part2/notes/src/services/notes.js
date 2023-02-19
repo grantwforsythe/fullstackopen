@@ -20,10 +20,6 @@ const update = (id, newObject) => {
   return fetchData(request);
 };
 
-const exportedObject = {
-  getAll: getAll,
-  create: create,
-  update: update
-};
+const noteService = { getAll, create, update };
 
-export default exportedObject;
+export default noteService;

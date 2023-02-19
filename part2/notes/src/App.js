@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
 import Note from './components/Note';
 import NoteForm from './components/NoteForm';
 
 import noteService from './services/notes';
 
-import './App.css'
+import './style/App.css';
 
 const App = () => {
   // Everytime a state is updated, the component is rerendered
@@ -17,12 +17,23 @@ const App = () => {
   // This is just to indicated when the component has rendered
   console.log('render');
 
+  // const fetchData = async () => {
+  //   const response = await fetch('http://localhost:3001/notes');
+  //   if (response.ok) {
+  //     const notes = await response.json();
+  //     return notes; 
+  //   } else {
+  //     console.log('Failed to make request');
+  //   }
+  // };
+
   // Run whenever a state changes
   // The empty array indicates that this is only run once the component is initially rendered
   // (The initial render of a component is referred to as 'mounting')  
   // A hook is just a sideeffect when something happens
   useEffect(() => {
     console.log('Calling useEffect');
+    // fetchData().then(notes => setNotes(notes));
     noteService
       .getAll()
       .then(initialNotes => setNotes(initialNotes));
@@ -44,6 +55,11 @@ const App = () => {
       .then(returnedNote => {
         // Only update the note with the same id
         setNotes(notes.map(n => n.id !== id ? n : returnedNote));
+      })
+      .catch(error => {
+        alert(`the note '${note.content}' was already deleted from server`);
+        // Filter out the deleted note from the state
+        setNotes(notes.filter(note => note.id !== id));
       });
   };
 
