@@ -3,15 +3,20 @@ import { useEffect, useState } from 'react';
 import Filter from './components/Filter';
 import Persons from './components/Persons';
 import PersonForm from './components/PersonForm';
+import Notification from './components/Notification';
 import personServices from './services/persons';
 
 import './styles/App.css';
+
+const WAIT_MS = 5000;
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [filter, setFilter] = useState('');
   const [newName, setNewName] = useState('');
   const [newPhone, setNewPhone] = useState('');
+  const [notification, setNotification] = useState(null);
+  const [isError, setIsError] = useState(true);
 
   useEffect(() => {
     personServices
@@ -36,9 +41,21 @@ const App = () => {
 
   const handleDelete = (id, name) => {
     if (window.confirm(`Delete ${name}`)) {
-      personServices.deletePerson(id);
-      // Remove the deleted person from the state
-      setPersons(persons.filter(person => person.id !== id));
+      personServices
+        .deletePerson(id)
+        .then(deltedPerson => {
+          setNotification(`Removed ${name}`);
+          setIsError(false);
+        })
+        .catch(error => {
+          setNotification(`${name} already removed from phonebook. Error: ${error}`);
+          setIsError(true);
+        })
+        .finally(() => {
+          // Remove the deleted person from the state
+          setPersons(persons.filter(person => person.id !== id));
+          setTimeout(() => setNotification(null), WAIT_MS);
+        });
     }
   };
 
@@ -47,7 +64,9 @@ const App = () => {
 
     // Send an alert if the number is already in the phonebook
     if (persons.filter(person => person.number === newPhone).length > 0) {
-      alert(`${newPhone} is already in the phonebook`);
+        setNotification(`${newPhone} is already in the phonebook`);
+        setIsError(true);
+        setTimeout(() => setNotification(null), WAIT_MS);
     }
     // Prompt the user to update a phone number for a person
     else if (persons.filter(person => person.name === newName).length > 0) {
@@ -72,6 +91,13 @@ const App = () => {
         .create(newPerson)
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
+          setNotification(`Added ${returnedPerson.name}`);
+          setIsError(false);
+          setTimeout(() => setNotification(null), WAIT_MS);
+        }).catch(error => {
+          setNotification(`Number for ${updatePerson.name} has been updated`);
+          setIsError(true);
+          setTimeout(() => setNotification(null), WAIT_MS);
         });
     }
 
@@ -89,16 +115,25 @@ const App = () => {
       .update(person.id, updatedPerson)
       .then(returnedPerson => {
         setPersons(persons.map(p => p.id !== person.id ? p: returnedPerson));
+        setNotification(`Number for ${returnedPerson.name} has been updated`);
+        setIsError(false);
+        setTimeout(() => setNotification(null), WAIT_MS);
       })
       .catch(error => {
-        alert(`${person.name} has already been deleted from the phonebook`);
         setPersons(persons.filter(p => p.id !== person.id));
+        setNotification(`${person.name} has already been deleted from the phonebook. Error ${error}`);
+        setIsError(true);
+        setTimeout(() => setNotification(null), WAIT_MS);
       });
   };
 
   return (
     <div>
-      <h2>Filter</h2>
+      <h2>Phonebook</h2>
+      <Notification
+        message={notification}
+        isError={isError}
+      />
       <Filter
        filter={filter}
        handleFilter={handleFilter}
