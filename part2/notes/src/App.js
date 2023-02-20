@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 
 import Note from './components/Note';
 import NoteForm from './components/NoteForm';
+import Footer from './components/Footer';
+import Notification from './components/Notification';
 
 import noteService from './services/notes';
 
@@ -13,6 +15,7 @@ const App = () => {
   const [newNote, setNewNote] = useState('');
   const [isImportant, setIsImportant] = useState(false);
   const [showAll, setShowAll] = useState(true);
+  const [errorMesage, setErrorMessage] = useState(null);
 
   // This is just to indicated when the component has rendered
   console.log('render');
@@ -57,7 +60,9 @@ const App = () => {
         setNotes(notes.map(n => n.id !== id ? n : returnedNote));
       })
       .catch(error => {
-        alert(`the note '${note.content}' was already deleted from server`);
+        setErrorMessage(`Note '${note.content}' was already removed from server`);
+        // Only display the error for 5 seconds
+        setTimeout(() => setErrorMessage(null), 5000);
         // Filter out the deleted note from the state
         setNotes(notes.filter(note => note.id !== id));
       });
@@ -96,6 +101,7 @@ const App = () => {
   return (
     <div>
       <h1>Notes</h1>
+      <Notification message={errorMesage} />
       <div>
         <button onClick={() => setShowAll(!showAll)}>
           show {showAll ? 'important' : 'all'}
@@ -117,6 +123,7 @@ const App = () => {
         newNote={newNote}
         handleNoteChange={handleNoteChange}
       />
+      <Footer />
     </div>
   );
 };
