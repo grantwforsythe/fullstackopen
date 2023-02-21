@@ -1,6 +1,8 @@
+import uniqid from 'uniqid';
+
 import Country from './Country';
 
-const Countries = ({ countries, filter }) => {
+const Countries = ({ countries, filter, handleClick }) => {
   const filteredCountries = countries
     .filter(country => {
         return country.name.common.toLowerCase().includes(filter.toLowerCase());
@@ -14,8 +16,13 @@ const Countries = ({ countries, filter }) => {
     return (
       <ul className='countries'>
         {filteredCountries
-          .map((country, i) => {
-            return <li key={i}>{country.name.common}</li>;
+          .map((country) => {
+            return (
+            <li key={uniqid()}>
+              {country.name.common}
+              <button onClick={() => handleClick(country.name)}>show</button>
+            </li>
+            );
           })}
       </ul>
     );

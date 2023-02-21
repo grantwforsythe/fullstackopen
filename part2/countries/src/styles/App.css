@@ -4,6 +4,10 @@
   margin: 0;
 }
 
+.countries button {
+  margin-left: 10px;
+}
+
 p {
   margin: 0;
 }

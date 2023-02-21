@@ -1,14 +1,11 @@
 import { useEffect, useState } from 'react';
 
 import Countries from './components/country/Countries';
-// import Notification from './components/common/Notification';
-
 import './styles/App.css';
 
 const App = () => {
   const [countries, setCountries] = useState(null);
   const [filter, setFilter] = useState('');
-  // const [notification, setNotification] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,6 +19,10 @@ const App = () => {
     };
     fetchData();
   }, []);
+
+  const handleClick = ({ common }) => {
+    setFilter(common);
+  };
 
   // Render component when the request has been made
   if (!countries) return null;
@@ -37,6 +38,7 @@ const App = () => {
       <Countries
         countries={countries} 
         filter={filter}
+        handleClick={handleClick}
       />
     </div>
   );
