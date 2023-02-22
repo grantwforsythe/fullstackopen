@@ -1,12 +1,16 @@
 {
   "name": "backend",
   "version": "0.0.1",
-  "description": "",
+  "description": "The backend for the notes web app",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grantwforsythe/fullstackopen.git"
   },
   "author": "Grant Forsythe",
   "license": "MIT",
@@ -15,5 +19,9 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/grantwforsythe/fullstackopen/issues"
+  },
+  "homepage": "https://github.com/grantwforsythe/fullstackopen#readme"
 }
