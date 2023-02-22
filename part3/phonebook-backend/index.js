@@ -1,7 +1,11 @@
 const express = require('express');
 const app = express();
 
+const requestLogger = require('./middleware/requestLogger');
+const unkownEndpoint = require('./middleware/unknownEndpoint');
+
 app.use(express.json());
+app.use(requestLogger);
 
 const PORT = 3000;
 const MAX_ID = 1000000;
@@ -94,6 +98,9 @@ app.delete('/api/persons/:id', (request, response) => {
 
   response.status(204).end();
 });
+
+// Only called if no routes handle the request
+app.use(unkownEndpoint);
 
 app.listen(PORT, () => {
   console.log(`Live on http://localhost:${PORT}`);
