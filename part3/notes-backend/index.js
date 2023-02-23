@@ -1,8 +1,13 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 
 // Parse request bodies in JSON format
 app.use(express.json());
+// All requests from other origins
+app.use(cors());
+// Access the static files in the build directory
+app.use(express.static('build'));
 
 let notes = [
   {
@@ -67,6 +72,17 @@ app.get('/api/notes/:id', (request, response) => {
   }
 });
 
+app.put('/api/notes/:id', (request, response) => {
+  const id = Number(request.params.id);
+  notes = notes.map(note => {
+    return note.id === id
+      ? { ...note, important: !note.important, }
+      : note;
+  });
+
+  response.json(notes.find(note => note.id === id));
+});
+
 app.delete('/api/notes/:id', (request, response) => {
   const id = Number(request.params.id);
   notes = notes.filter(note => note.id !== id);
@@ -74,7 +90,7 @@ app.delete('/api/notes/:id', (request, response) => {
   response.status(204).end()
 });
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Live on http://localhost:${PORT}`);
 });
