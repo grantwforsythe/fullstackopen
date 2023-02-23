@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const WEATHER_API = process.env.REACT_APP_API_KEY;
 
@@ -6,15 +6,17 @@ const Country = ({ country }) => {
   const [weather, setWeather] = useState(null);
 
   // Get the weather data for the countries capital
-  (async (city) => {
-    const response = await fetch(`http://api.weatherapi.com/v1/current.json?key=${WEATHER_API}&q=${city}&aqi=no`);
-    if (response.ok) {
-      const data = await response.json();
-      setWeather(data);
-    } else {
-      console.log('Failed to make request')
-    }
-  })(country.name.common);
+  useEffect(() => {
+    (async (city) => {
+      const response = await fetch(`http://api.weatherapi.com/v1/current.json?key=${WEATHER_API}&q=${city}&aqi=no`);
+      if (response.ok) {
+        const data = await response.json();
+        setWeather(data);
+      } else {
+        console.log('Failed to make request')
+      }
+    })(country.name.common);
+  }, [country]);
 
   if (!weather) return null;
 
