@@ -3,6 +3,7 @@ Course work for the University of Helsinki's [full stack course](https://fullsta
 
 ## Live Projects
 - [Note App](https://fullstackopen-notes.onrender.com/)
+- [Phonebook App](https://fullstackopen-phonebook-zw3n.onrender.com)
 
 ## Part 0 - Fundamentals of Web Apps
 ## Part 1 - Introduction to React
