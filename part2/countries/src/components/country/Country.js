@@ -3,24 +3,20 @@ import { useState } from 'react';
 const WEATHER_API = process.env.REACT_APP_API_KEY;
 
 const Country = ({ country }) => {
-  const [weather, setWeather] = useState({});
+  const [weather, setWeather] = useState(null);
 
   // Get the weather data for the countries capital
   (async (city) => {
     const response = await fetch(`http://api.weatherapi.com/v1/current.json?key=${WEATHER_API}&q=${city}&aqi=no`);
     if (response.ok) {
       const data = await response.json();
-      setWeather({
-        city: city,
-        temp: data.current.temp_c,
-        icon: data.current.condition.icon,
-        alt: data.current.condition.text,
-        wind: data.current.wind_mph
-      });
+      setWeather(data);
     } else {
       console.log('Failed to make request')
     }
   })(country.name.common);
+
+  if (!weather) return null;
 
   return (
     <>
@@ -38,13 +34,13 @@ const Country = ({ country }) => {
         alt={`${country.name.common} flag`}
       />
       <div>
-        <h2>Weather in {weather.city}</h2>
-        <p>Temperature {weather.temp} Celcius</p>
+        <h2>Weather in {country.name.common}</h2>
+        <p>Temperature {weather.current.temp_c} Celcius</p>
         <img
-          src={weather.icon}
-          alt={weather.alt}
+          src={weather.current.condition.icon}
+          alt={weather.current.condition.text}
         />
-        <p>Wind {weather.wind}</p>
+        <p>Wind {weather.current.wind_mph}</p>
       </div>
     </>
   );
