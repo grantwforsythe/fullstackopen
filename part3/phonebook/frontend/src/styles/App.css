@@ -1,0 +1,21 @@
+.notification {
+  background: lightgrey;
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+ul.numbers li {
+  list-style-type: none;
+  margin-left: -40px;
+}
+
+li > button {
+  margin-left: 5px;
+}
+
+li > button:hover {
+  color: red;
+}

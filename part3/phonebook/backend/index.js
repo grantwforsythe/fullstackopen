@@ -6,6 +6,7 @@ const unkownEndpoint = require('./middleware/unknownEndpoint');
 
 app.use(express.json());
 app.use(requestLogger);
+app.use(express.static('../frontend/build'));
 
 const PORT = 3000;
 const MAX_ID = 1000000;
@@ -90,6 +91,18 @@ app.get('/api/persons/:id', (request, response) => {
       errorCode: 404
     });
   }
+});
+
+app.put('/api/persons/:id', (request, response) => {
+  const id = Number(request.params.id);
+  persons = persons.map(person => {
+    return person.id === id
+      ? { ...person, number: request.body.number }
+      : person;
+  });
+
+  response.json(persons.find(person => person.id === id));
+
 });
 
 app.delete('/api/persons/:id', (request, response) => {
