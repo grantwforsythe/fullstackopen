@@ -29,16 +29,13 @@ router.get('/notes/:id', async (request, response) => {
 });
 
 router.put('/notes/:id', async (request, response) => {
-  const note = await Note.findById(request.params.id);
-
   try {
-    await Note.updateOne(
-      { _id: note.id },
-      { '$set': { important: !note.important}}
+    const note = await Note.findOneAndUpdate(
+      { _id: request.params.id },
+      { important: JSON.parse(request.body.important) },
+      { new: true }       // Return the document after it's been updated
     );
-    response.json({
-      message : `Note ${note.id} was successfully updated`,
-    });
+    response.json(note);
   } catch (error) {
     response.status(500).json({ 
       error: 'There was a server side error updating the note',

@@ -1,23 +1,39 @@
-import axios from 'axios';
 const baseUrl = '/api/notes';
 
-const fetchData = (request) => {
-  return request.then(response => response.data);
+const getAll = async () => {
+  const response = await fetch(baseUrl);
+  return await response.json();
 };
 
-const getAll = () => {
-  const request = axios.get(baseUrl);
-  return fetchData(request);
+const create = async (newObject) => {
+  const response = await fetch(baseUrl, {
+    method: "POST",
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      content: newObject.content,
+      important: newObject.important,
+    })
+  });
+
+  return await response.json();
 };
 
-const create = newObject => {
-  const request = axios.post(baseUrl, newObject);
-  return fetchData(request);
-};
+const update = async (id, newObject) => {
+  const response = await fetch(`${baseUrl}/${id}`, {
+    method: "PUT",
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      important: newObject.important,
+    })
+  });
 
-const update = (id, newObject) => {
-  const request = axios.put(`${baseUrl}/${id}`, newObject);
-  return fetchData(request);
+  return await response.json();
 };
 
 const noteService = { getAll, create, update };
