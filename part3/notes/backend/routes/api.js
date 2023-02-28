@@ -23,36 +23,39 @@ router.post('/notes', async (request, response) => {
   response.json(note);
 });
 
-router.get('/notes/:id', async (request, response) => {
-  const note = await Note.findById(request.params.id) || {};
-  response.json(note);
+router.get('/notes/:id', async (request, response, next) => {
+  try {
+    const note = await Note.findById(request.params.id);
+
+    if (note) {
+      response.json(note);
+    } else {
+      response.status(404).end();
+    }
+  } catch (error) {
+    next(error);
+  }
 });
 
-router.put('/notes/:id', async (request, response) => {
+router.put('/notes/:id', async (request, response, next) => {
   try {
-    const note = await Note.findOneAndUpdate(
-      { _id: request.params.id },
-      { important: JSON.parse(request.body.important) },
+    const note = await Note.findByIdAndUpdate(
+      request.params.id,
+      { important: request.body.important },
       { new: true }       // Return the document after it's been updated
     );
     response.json(note);
   } catch (error) {
-    response.status(500).json({ 
-      error: 'There was a server side error updating the note',
-      errorCode: 505,
-    });
+      next(error);
   }
 });
 
-router.delete('/notes/:id', async (request, response) => {
+router.delete('/notes/:id', async (request, response, next) => {
   try {
-    await Note.findById(request.params.id).remove();
+    await Note.findByIdAndRemove(request.params.id);
     response.status(204).end()
   } catch (error) {
-    response.status(500).json({
-      error: 'There was a server side error deleting the note',
-      errorCode: 500
-    });
+    next(error);
   }
 });
 

@@ -11,9 +11,9 @@ const unkownEndpoint = require('./middleware/unknownEndpoint');
 
 const PORT = process.env.PORT;
 
+app.use(express.static('../frontend/build'));
 app.use(express.json());
 app.use(requestLogger);
-app.use(express.static('../frontend/build'));
 
 app.use(infoRoute);
 app.use('/api', apiRoutes);

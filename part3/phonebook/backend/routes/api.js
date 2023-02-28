@@ -37,45 +37,43 @@ router.post('/persons', async (request, response) => {
   }
 });
 
-router.get('/persons/:id', async (request, response) => {
-  const person = await Person.findById(request.params.id);
+router.get('/persons/:id', async (request, response, next) => {
+  try {
+    const person = await Person.findById(request.params.id);
 
-  if (person) {
-    response.json(person);
-  } else {
-    response.status(404).json({
-      error: `No person found with an id of ${id}`,
-      errorCode: 404
-    });
+    if (person) {
+      response.json(person);
+    } else {
+      response.status(404).json({
+        error: `No person found with an id of ${id}`,
+        errorCode: 404
+      });
+    }
+  } catch (error) {
+    next(error);
   }
 });
 
-router.put('/persons/:id', async (request, response) => {
+router.put('/persons/:id', async (request, response, next) => {
   try {
-    const person = await Person.findOneAndUpdate(
-      { _id: request.params.id },
+    const person = await Person.findByIdAndUpdate(
+      request.params.id,
       { number: request.body.number },
       { new: true}
     );
 
     response.json(person);
   } catch (error) {
-    response.status(500).json({ 
-      error: 'There was a server side error updating the note',
-      errorCode: 500,
-    });
+    next(error);
   }
 });
 
-router.delete('/persons/:id', async (request, response) => {
+router.delete('/persons/:id', async (request, response, next) => {
   try {
-    await Person.findById(request.params.id).remove();
+    await Person.findByIdAndRemove(request.params.id);
     response.status(204).end()
   } catch (error) {
-    response.status(500).json({
-      error: 'There was a server side error deleting the note',
-      errorCode: 500
-    });
+    next(error);
   }
 });
 
