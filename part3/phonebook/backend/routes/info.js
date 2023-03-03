@@ -8,7 +8,7 @@ router.get('/info', async (request, response) => {
   const persons = await Person.find({});
   response.send(`
     Phonebook has info for ${persons.length} people
-    ${timeRecived.toLocaleString('en-US', {timeZone: 'America/New_York'})} EST
+    ${timeRecived.toLocaleString('en-US', { timeZone: 'America/New_York' })} EST
   `);
 });
 

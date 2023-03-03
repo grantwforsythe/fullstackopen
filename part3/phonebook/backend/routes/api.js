@@ -8,32 +8,17 @@ router.get('/persons', async (request, response) => {
   response.json(persons);
 });
 
-router.post('/persons', async (request, response) => {
-  const { name, number } = request.body;
-
-  // Check that both variables exist
-  if (name && number) {
-    const inDB = await Person.find({ name: name });
-    if (!inDB) {
-      return response.status(400).json({
-        error: 'name must be unique',
-        errorCode: 400
-      });
-    }
-
+router.post('/persons', async (request, response, next) => {
+  try {
     const person = new Person({
-      name,
-      number,
+      name: request.body.name,
+      number: request.body.number,
     });
 
     await person.save();
-
     response.json(person);
-  } else {
-    response.status(400).json({
-      error: 'Name or number field missing',
-      errorCode: 400
-    });
+  } catch (error) {
+    next(error);
   }
 });
 
@@ -45,7 +30,7 @@ router.get('/persons/:id', async (request, response, next) => {
       response.json(person);
     } else {
       response.status(404).json({
-        error: `No person found with an id of ${id}`,
+        error: `No person found with an id of ${request.params.id}`,
         errorCode: 404
       });
     }
@@ -59,7 +44,7 @@ router.put('/persons/:id', async (request, response, next) => {
     const person = await Person.findByIdAndUpdate(
       request.params.id,
       { number: request.body.number },
-      { new: true}
+      { new: true }
     );
 
     response.json(person);
@@ -70,8 +55,9 @@ router.put('/persons/:id', async (request, response, next) => {
 
 router.delete('/persons/:id', async (request, response, next) => {
   try {
-    await Person.findByIdAndRemove(request.params.id);
-    response.status(204).end()
+    const person = await Person.findByIdAndRemove(request.params.id);
+    console.log(person);
+    response.status(204).json(person);
   } catch (error) {
     next(error);
   }

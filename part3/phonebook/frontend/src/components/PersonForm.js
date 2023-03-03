@@ -16,13 +16,12 @@ const PersonForm = ({
             placeholder='John Smith'
             value={newName}
             onChange={handleNewName}
-            />
+          />
         </div>
         <div>
           <label for='phone'>Number: </label>
           <input
             type='tel'
-            pattern='\([0-9]{3}\) [0-9]{3}-[0-9]{4}'
             title='Please enter a phone number in the correct format'
             placeholder='(012) 345-6789'
             value={newPhone}

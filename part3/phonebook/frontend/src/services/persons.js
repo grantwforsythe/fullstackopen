@@ -13,16 +13,21 @@ const create = async (newPerson) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      name: newPerson.content,
-      number: newPerson.important,
+      name: newPerson.name,
+      number: newPerson.number,
     })
   });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error);
+  }
 
   return await response.json();
 };
 
 const update = async (id, newPerson) => {
-    const response = await fetch(`${baseUrl}/${id}`, {
+  const response = await fetch(`${baseUrl}/${id}`, {
     method: "PUT",
     headers: {
       'Accept': 'application/json',
@@ -33,17 +38,27 @@ const update = async (id, newPerson) => {
     })
   });
 
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error);
+  }
+
   return await response.json();
 };
 
 const deletePerson = async (id) => {
-    const response = await fetch(`${baseUrl}/${id}`, {
+  const response = await fetch(`${baseUrl}/${id}`, {
     method: "DELETE",
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     },
   });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error);
+  }
 
   return await response.json();
 };
