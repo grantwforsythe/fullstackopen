@@ -8,19 +8,19 @@ router.get('/notes', async (request, response) => {
   response.json(notes);
 });
 
-router.post('/notes', async (request, response) => {
-  if (!request.body.content) {
-    return response.status(400).json({ error: 'Content missing' });
-  }
-
+router.post('/notes', async (request, response, next) => {
   const note = new Note({
     content: request.body.content,
     important: request.body.important || false,
   });
 
-  await note.save();
-
-  response.json(note);
+  try {
+    await note.save();
+    response.json(note);
+  } catch (error) {
+    // ValidationError: content property was not set in the request
+    next(error);
+  }
 });
 
 router.get('/notes/:id', async (request, response, next) => {
@@ -42,18 +42,22 @@ router.put('/notes/:id', async (request, response, next) => {
     const note = await Note.findByIdAndUpdate(
       request.params.id,
       { important: request.body.important },
-      { new: true }       // Return the document after it's been updated
+      {
+        new: true,            // Return the document after it's been updated
+        runValidators: true,  // Validate on update
+        context: 'query',
+      }
     );
     response.json(note);
   } catch (error) {
-      next(error);
+    next(error);
   }
 });
 
 router.delete('/notes/:id', async (request, response, next) => {
   try {
     await Note.findByIdAndRemove(request.params.id);
-    response.status(204).end()
+    response.status(204).end();
   } catch (error) {
     next(error);
   }
