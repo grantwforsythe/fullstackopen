@@ -5,7 +5,8 @@ const logger = require('../utils/logger');
 
 mongoose.set('strictQuery', false);
 
-mongoose.connect(config.MONGODB_URI)
+mongoose
+  .connect(config.MONGODB_URI)
   .then(result => logger.log('Connected to MongoDB. Result: ', result))
   .catch(error => logger.error('Failed to connect to MongoDB. Error: ', error));
 
@@ -23,7 +24,7 @@ noteSchema.set('toJSON', {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;
-  }
+  },
 });
 
 module.exports = mongoose.model('Note', noteSchema);
