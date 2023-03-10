@@ -39,6 +39,7 @@
   },
   "homepage": "https://fullstackopen-notes.onrender.com/",
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "globalTeardown": "./tests/teardown.js"
   }
 }
