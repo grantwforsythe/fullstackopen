@@ -13,10 +13,6 @@ const arrayOfBlogs = [
   new mongoose.Types.ObjectId('6408fd3f3331b166324408f4'),
 ];
 
-afterAll(() => {
-  mongoose.disconnect();
-});
-
 test('Total number of likes', async () => {
   const blogs = await Blog.find({ _id: { $in: arrayOfBlogs } });
 
@@ -30,4 +26,8 @@ test('Favourite blog', async () => {
 
   const result = listHelper.favouriteBlog(blogs);
   expect(result).toEqual(favouriteBlog);
+});
+
+afterAll(() => {
+  mongoose.disconnect();
 });

@@ -13,6 +13,6 @@ module.exports = {
   },
   rules: {
     'no-console': 0,
-    'prettier/prettier': ['error', { arrowParens: 'avoid', endOfLife: 'crlf' }],
+    'prettier/prettier': ['error', { arrowParens: 'avoid', endOfLine: 'crlf' }],
   },
 };
