@@ -15,9 +15,12 @@ app.use(express.static('../frontend/build'));
 app.use(express.json());
 // All requests from other origins
 app.use(cors());
-app.use(morgan('tiny'));
 
-app.use('/api', apiRoutes);
+if (process.env.NODE_ENV !== 'test') {
+  app.use(morgan('tiny'));
+}
+
+app.use('/api/notes', apiRoutes);
 
 app.use(unknownEndpoint);
 app.use(errorHandler);
