@@ -6,14 +6,18 @@ const Note = require('../models/note');
 
 const api = supertest(app);
 
-// Runs before each test
 beforeEach(async () => {
-  await Note.deleteMany({});
-  const notes = helper.initialNotes.map(note => new Note(note));
-
   // Transform all of the promises into one promise
   // Excutes the promises in parallel
-  await Promise.all(notes.map(note => note.save()));
+  await Promise.all(helper.initialNotes.map(note => Note.create(note)));
+});
+
+afterEach(async () => {
+  await Note.deleteMany({});
+});
+
+afterAll(async () => {
+  await mongoose.connection.close();
 });
 
 test('notes are returned as json', async () => {
@@ -80,9 +84,4 @@ test('a note can be deleted', async () => {
   const notesAtEnd = await helper.notesInDb();
 
   expect(notesAtEnd).toHaveLength(notesAtStart.length - 1);
-});
-
-// Returns after all the tests
-afterAll(async () => {
-  await mongoose.connection.close();
 });
