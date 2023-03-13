@@ -9,12 +9,11 @@ router.get('', async (request, response) => {
 });
 
 router.post('', async (request, response) => {
-  const note = new Note({
+  const note = await Note.create({
     content: request.body.content,
-    important: request.body.important || false,
+    important: request.body.important,
   });
 
-  await note.save();
   response.status(201).json(note);
 });
 
