@@ -14,6 +14,11 @@ router.post('/', async (request, response) => {
   response.status(201).json(blog);
 });
 
+router.get('/:id', async (request, response) => {
+  const blog = await Blog.findById(request.params.id);
+  response.json(blog);
+});
+
 router.put('/:id', async (request, response) => {
   const blog = await Blog.findByIdAndUpdate(
     request.params.id,
