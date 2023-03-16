@@ -20,33 +20,35 @@ afterAll(async () => {
   mongoose.disconnect();
 });
 
-test('Total number of likes', async () => {
-  const response = await api
-    .get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/);
+describe('List helper', () => {
+  test('Total number of likes', async () => {
+    const response = await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
 
-  const result = listHelper.totalLikes(response.body);
-  expect(result).toBe(36);
-});
+    const result = listHelper.totalLikes(response.body);
+    expect(result).toBe(36);
+  });
 
-test('Favourite blog', async () => {
-  const response = await api
-    .get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/);
+  test('Favourite blog', async () => {
+    const response = await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
 
-  const favouriteBlog = await Blog.findById('5a422b3a1b54a676234d17f9');
+    const favouriteBlog = await Blog.findById('5a422b3a1b54a676234d17f9');
 
-  const result = listHelper.favouriteBlog(response.body);
-  expect(result).toEqual(favouriteBlog.toJSON());
-});
+    const result = listHelper.favouriteBlog(response.body);
+    expect(result).toEqual(favouriteBlog.toJSON());
+  });
 
-test('Has id field', async () => {
-  const response = await api.get('/api/blogs');
+  test('Has id field', async () => {
+    const response = await api.get('/api/blogs');
 
-  response.body.forEach(blog => {
-    expect(blog.id).toBeDefined();
+    response.body.forEach(blog => {
+      expect(blog.id).toBeDefined();
+    });
   });
 });
 
