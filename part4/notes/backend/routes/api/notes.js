@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const Note = require('../models/note');
+const Note = require('../../models/note');
 
 router.get('', async (request, response) => {
   const notes = await Note.find({});
