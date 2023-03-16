@@ -12,7 +12,8 @@ module.exports = {
     ecmaVersion: 'latest',
   },
   rules: {
-    'no-console': 0,
     'prettier/prettier': ['error', { arrowParens: 'avoid', endOfLine: 'crlf' }],
+    'no-console': 0,
+    'node/no-unpublished-require': 0
   },
 };
