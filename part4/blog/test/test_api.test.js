@@ -111,3 +111,54 @@ describe('Creating blogs', () => {
       .expect('Content-Type', /application\/json/);
   });
 });
+
+describe('Updating blogs', () => {
+  test('Update one field in a blog', async () => {
+    const blogId = '5a422a851b54a676234d17f7';
+    const updatedTitle = { title: 'Crime and Punishment' };
+
+    await api
+      .put(`/api/blogs/${blogId}`)
+      .send(updatedTitle)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    const response = await api.get(`/api/blogs/${blogId}`);
+    const updatedBlog = response.body;
+
+    expect(updatedBlog).toMatchObject(updatedTitle);
+  });
+
+  test('Update multiple fields in a blog', async () => {
+    const blogId = '5a422a851b54a676234d17f7';
+    const updatedTitle = {
+      title: 'Crime and Punishment',
+      author: 'Fyodor Dostoevsky',
+      likes: 72,
+    };
+
+    await api
+      .put(`/api/blogs/${blogId}`)
+      .send(updatedTitle)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    const response = await api.get(`/api/blogs/${blogId}`);
+    const updatedBlog = response.body;
+
+    expect(updatedBlog).toMatchObject(updatedTitle);
+  });
+});
+
+describe('Deleting blogs', () => {
+  test('Delete one blog', async () => {
+    const blogId = '5a422a851b54a676234d17f7';
+
+    await api.delete(`/api/blogs/${blogId}`).expect(204);
+
+    const response = await api.get('/api/blogs');
+    const blogs = response.body;
+
+    expect(blogs.filter(blog => blog.id === blogId)).toHaveLength(0);
+  });
+});
