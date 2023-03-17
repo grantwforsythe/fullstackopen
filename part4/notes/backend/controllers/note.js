@@ -1,23 +1,20 @@
-const express = require('express');
-const router = express.Router();
+const Note = require('../models/note');
 
-const Note = require('../../models/note');
-
-router.get('', async (request, response) => {
+const getAll = async (request, response) => {
   const notes = await Note.find({});
   response.json(notes);
-});
+};
 
-router.post('', async (request, response) => {
+const addOne = async (request, response) => {
   const note = await Note.create({
     content: request.body.content,
     important: request.body.important,
   });
 
   response.status(201).json(note);
-});
+};
 
-router.get('/:id', async (request, response) => {
+const getById = async (request, response) => {
   const note = await Note.findById(request.params.id);
 
   if (note) {
@@ -25,9 +22,9 @@ router.get('/:id', async (request, response) => {
   } else {
     response.status(404).end();
   }
-});
+};
 
-router.put('/:id', async (request, response) => {
+const updatedById = async (request, response) => {
   const note = await Note.findByIdAndUpdate(
     request.params.id,
     { important: request.body.important },
@@ -38,11 +35,17 @@ router.put('/:id', async (request, response) => {
     }
   );
   response.json(note);
-});
+};
 
-router.delete('/:id', async (request, response) => {
+const deleteById = async (request, response) => {
   await Note.findByIdAndRemove(request.params.id);
   response.status(204).end();
-});
+};
 
-module.exports = router;
+module.exports = {
+  getAll,
+  addOne,
+  getById,
+  updatedById,
+  deleteById,
+};

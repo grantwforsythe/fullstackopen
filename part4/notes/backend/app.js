@@ -7,7 +7,7 @@ const app = express();
 const unknownEndpoint = require('./middleware/unknownEndpoint');
 const errorHandler = require('./middleware/errorHandler');
 
-const apiNotesRoutes = require('./routes/api/notes');
+const apiNotesRoutes = require('./routes/notes');
 
 // Access the static files in the build directory
 app.use(express.static('../frontend/build'));
