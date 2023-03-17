@@ -7,7 +7,8 @@ const app = express();
 const unknownEndpoint = require('./middleware/unknownEndpoint');
 const errorHandler = require('./middleware/errorHandler');
 
-const apiNotesRoutes = require('./routes/notes');
+const noteRoutes = require('./routes/notes');
+const userRoutes = require('./routes/users');
 
 // Access the static files in the build directory
 app.use(express.static('../frontend/build'));
@@ -20,7 +21,8 @@ if (process.env.NODE_ENV !== 'test') {
   app.use(morgan('tiny'));
 }
 
-app.use('/api/notes', apiNotesRoutes);
+app.use('/api/notes', noteRoutes);
+app.use('/api/users', userRoutes);
 
 app.use(unknownEndpoint);
 app.use(errorHandler);
