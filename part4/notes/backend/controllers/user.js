@@ -1,8 +1,7 @@
 const bcrypt = require('bcrypt');
 
+const config = require('../utils/config');
 const User = require('../models/user');
-
-const SALT_ROUNDS = 10;
 
 const checkPassword = password => {
   if (!password.match(/[a-z]+/)) {
@@ -34,7 +33,7 @@ const addUser = async (request, response) => {
     response.status(400).json({ error: isValidPassword });
   }
 
-  const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
+  const passwordHash = await bcrypt.hash(password, config.SALT_ROUNDS);
 
   const user = await User.create({
     username,
