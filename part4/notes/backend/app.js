@@ -9,6 +9,7 @@ const errorHandler = require('./middleware/errorHandler');
 
 const noteRoutes = require('./routes/notes');
 const userRoutes = require('./routes/users');
+const loginRoutes = require('./routes/login');
 
 // Access the static files in the build directory
 app.use(express.static('../frontend/build'));
@@ -21,6 +22,7 @@ if (process.env.NODE_ENV !== 'test') {
   app.use(morgan('tiny'));
 }
 
+app.use(loginRoutes);
 app.use('/api/notes', noteRoutes);
 app.use('/api/users', userRoutes);
 
