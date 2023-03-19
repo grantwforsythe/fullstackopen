@@ -1,8 +1,11 @@
 const express = require('express');
 require('express-async-errors');
 const morgan = require('morgan');
+const { expressjwt } = require('express-jwt');
 const cors = require('cors');
 const app = express();
+
+const config = require('./utils/config');
 
 const unknownEndpoint = require('./middleware/unknownEndpoint');
 const errorHandler = require('./middleware/errorHandler');
@@ -23,6 +26,10 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 app.use(loginRoutes);
+
+// Authorization
+app.use(expressjwt({ secret: config.ACCESS_TOKEN, algorithms: ['HS256'] }));
+
 app.use('/api/notes', noteRoutes);
 app.use('/api/users', userRoutes);
 
