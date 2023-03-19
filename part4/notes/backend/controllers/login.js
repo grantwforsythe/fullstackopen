@@ -15,12 +15,13 @@ module.exports = async (request, response) => {
     return response.status(401).json({ error: 'invalid username or password' });
   }
 
-  const userForToken = {
+  const payload = {
     username: user.username,
     id: user._id,
   };
 
-  const token = jwt.sign(userForToken, config.ACCESS_TOKEN);
+  // The token expires in 60 * 60 seconds = 1 hour
+  const token = jwt.sign(payload, config.ACCESS_TOKEN, { expiresIn: 60 * 60 });
 
   response
     .status(200)
