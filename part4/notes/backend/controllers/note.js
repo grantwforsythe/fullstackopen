@@ -1,5 +1,17 @@
+const jwt = require('jsonwebtoken');
+
+const config = require('../utils/config');
 const Note = require('../models/note');
 const User = require('../models/user');
+
+const getTokenFrom = request => {
+  const authorization = request.get('authorization');
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.split(' ')[1];
+  } else {
+    return null;
+  }
+};
 
 const getAll = async (request, response) => {
   const notes = await Note.find({}).populate('user', { username: 1, name: 1 });
@@ -7,9 +19,16 @@ const getAll = async (request, response) => {
 };
 
 const addOne = async (request, response) => {
-  const { content, important, userId } = request.body;
+  const { content, important } = request.body;
 
-  const user = await User.findById(userId);
+  const decodedToken = jwt.verify(getTokenFrom(request), config.ACCESS_TOKEN);
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' });
+  }
+
+  console.log(decodedToken);
+
+  const user = await User.findById(decodedToken.id);
 
   const note = await Note.create({ content, important, user: user.id });
   // New notes are saved for a user
