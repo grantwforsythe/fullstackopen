@@ -9,6 +9,13 @@ const User = require('../models/user');
 
 const api = supertest(app);
 
+beforeAll(async () => {
+  await User.deleteMany({});
+
+  const passwordHash = await bcrypt.hash('sAlAi9en!', 10);
+  await User.create({ username: 'root', passwordHash });
+});
+
 beforeEach(async () => {
   // Transform all of the promises into one promise
   // Excutes the promises in parallel
@@ -36,35 +43,6 @@ test('all the notes are returned', async () => {
   expect(response.body).toHaveLength(helper.initialNotes.length);
 });
 
-test('a valid note can be added', async () => {
-  const newNote = {
-    content: 'async/await simplifies making async calls',
-    important: true,
-  };
-
-  await api
-    .post('/api/notes')
-    .send(newNote)
-    .expect(201)
-    .expect('Content-Type', /application\/json/);
-
-  const response = await api.get('/api/notes');
-  const contents = response.body.map(note => note.content);
-
-  expect(contents).toContain(newNote.content);
-});
-
-test('note without content is not added', async () => {
-  const newNote = {
-    important: true,
-  };
-
-  await api.post('/api/notes').send(newNote).expect(400);
-
-  const notesInDb = await helper.notesInDb();
-  expect(notesInDb).toHaveLength(helper.initialNotes.length);
-});
-
 test('a specific note can be viewed', async () => {
   const notesAtStart = await helper.notesInDb();
 
@@ -89,56 +67,37 @@ test('a note can be deleted', async () => {
   expect(notesAtEnd).toHaveLength(notesAtStart.length - 1);
 });
 
-describe('when there is initially one user in db', () => {
-  beforeEach(async () => {
-    await User.deleteMany({});
+test('a valid note can be added', async () => {
+  const user = await helper.getUserByUsername('root');
 
-    const passwordHash = await bcrypt.hash('sekret', 10);
-    const user = new User({ username: 'root', passwordHash });
+  const newNote = {
+    content: 'async/await simplifies making async calls',
+    important: true,
+    userId: user.id,
+  };
 
-    await user.save();
-  });
+  await api
+    .post('/api/notes')
+    .send(newNote)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
 
-  test('creation succeeds with a fresh username', async () => {
-    const usersAtStart = await helper.usersInDb();
+  const response = await api.get('/api/notes');
+  const contents = response.body.map(note => note.content);
 
-    const newUser = {
-      username: 'mluukkai',
-      name: 'Matti Luukkainen',
-      password: 'sAlAi9en!',
-    };
+  expect(contents).toContain(newNote.content);
+});
 
-    await api
-      .post('/api/users')
-      .send(newUser)
-      .expect(201)
-      .expect('Content-Type', /application\/json/);
+test('note without content is not added', async () => {
+  const user = await helper.getUserByUsername('root');
 
-    const usersAtEnd = await helper.usersInDb();
-    expect(usersAtEnd).toHaveLength(usersAtStart.length + 1);
+  const newNote = {
+    important: true,
+    userId: user.id,
+  };
 
-    const usernames = usersAtEnd.map(u => u.username);
-    expect(usernames).toContain(newUser.username);
-  });
+  await api.post('/api/notes').send(newNote).expect(400);
 
-  test('creation fails with proper statuscode and message if username already taken', async () => {
-    const usersAtStart = await helper.usersInDb();
-
-    const newUser = {
-      username: 'root',
-      name: 'Superuser',
-      password: 'sAlAi9en!',
-    };
-
-    const result = await api
-      .post('/api/users')
-      .send(newUser)
-      .expect(400)
-      .expect('Content-Type', /application\/json/);
-
-    expect(result.body.error).toContain('expected `username` to be unique');
-
-    const usersAtEnd = await helper.usersInDb();
-    expect(usersAtEnd).toEqual(usersAtStart);
-  });
+  const notesInDb = await helper.notesInDb();
+  expect(notesInDb).toHaveLength(helper.initialNotes.length);
 });

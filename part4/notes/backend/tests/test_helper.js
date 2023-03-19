@@ -30,9 +30,15 @@ const usersInDb = async () => {
   return users.map(user => user.toJSON());
 };
 
+const getUserByUsername = async username => {
+  const user = await User.findOne({ username });
+  return user.toJSON();
+};
+
 module.exports = {
   initialNotes,
   nonExistingId,
   notesInDb,
   usersInDb,
+  getUserByUsername,
 };
