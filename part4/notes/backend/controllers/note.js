@@ -9,7 +9,7 @@ const getAll = async (request, response) => {
 const addOne = async (request, response) => {
   const { content, important } = request.body;
 
-  const user = await User.findById(request.user.id);
+  const user = await User.findById(request.auth.id);
 
   const note = await Note.create({ content, important, user: user.id });
   // New notes are saved for a user

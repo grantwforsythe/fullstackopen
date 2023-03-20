@@ -6,13 +6,20 @@ const helper = require('./test_helper');
 const User = require('../models/user');
 
 const api = supertest(app);
+let token = '';
 
 describe('Creating users', () => {
   beforeAll(async () => {
     await User.deleteMany({});
 
-    const passwordHash = await bcrypt.hash('sAlAi9en!', 10);
-    await User.create({ username: 'root', passwordHash });
+    const username = 'root';
+    const password = 'sAlAi9en!';
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    await User.create({ username, passwordHash });
+
+    const response = await api.post('/login').send({ username, password });
+    token = response.body.token;
   });
 
   test('creation succeeds with a fresh username', async () => {
@@ -27,6 +34,7 @@ describe('Creating users', () => {
     await api
       .post('/api/users')
       .send(newUser)
+      .set('Authorization', `Bearer ${token}`)
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
@@ -49,6 +57,7 @@ describe('Creating users', () => {
     const result = await api
       .post('/api/users')
       .send(newUser)
+      .set('Authorization', `Bearer ${token}`)
       .expect(400)
       .expect('Content-Type', /application\/json/);
 
