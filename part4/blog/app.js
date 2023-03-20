@@ -3,7 +3,7 @@ require('express-async-errors');
 const cors = require('cors');
 
 const app = express();
-const blogsRouter = require('./routes/api/blogs');
+const blogsRouter = require('./routes/blogs');
 const errorHandler = require('./middleware/errorHandler');
 
 app.use(cors());
