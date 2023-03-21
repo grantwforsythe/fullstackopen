@@ -10,7 +10,10 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   name: String,
-  passwordHash: String,
+  passwordHash: {
+    type: String,
+    required: true,
+  },
   notes: [
     {
       type: mongoose.Schema.Types.ObjectId,
