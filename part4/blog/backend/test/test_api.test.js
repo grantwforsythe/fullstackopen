@@ -115,7 +115,7 @@ describe('Creating blogs', () => {
 describe('Updating blogs', () => {
   test('Update one field in a blog', async () => {
     const blogId = '5a422a851b54a676234d17f7';
-    const updatedTitle = { title: 'Crime and Punishment' };
+    const updatedTitle = { title: 'Notes From The Underground' };
 
     await api
       .put(`/api/blogs/${blogId}`)

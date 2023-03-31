@@ -5,6 +5,7 @@ const uniqueValidator = require('mongoose-unique-validator');
 
 const config = require('../utils/config');
 
+mongoose.set('strictQuery', false);
 mongoose.connect(config.MONGODB_URI);
 
 const userSchema = new mongoose.Schema({
@@ -18,6 +19,7 @@ const userSchema = new mongoose.Schema({
   name: String,
   passwordHash: {
     type: String,
+    minLength: 3,
     required: true,
   },
   blogs: [
