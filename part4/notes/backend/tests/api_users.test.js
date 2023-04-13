@@ -1,6 +1,7 @@
 const supertest = require('supertest');
 const bcrypt = require('bcrypt');
 
+const config = require('../utils/config');
 const app = require('../app');
 const helper = require('./test_helper');
 const User = require('../models/user');
@@ -14,7 +15,7 @@ describe('Creating users', () => {
 
     const username = 'root';
     const password = 'sAlAi9en!';
-    const passwordHash = await bcrypt.hash(password, 10);
+    const passwordHash = await bcrypt.hash(password, config.SALT_ROUNDS);
 
     await User.create({ username, passwordHash });
 
