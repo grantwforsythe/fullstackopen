@@ -7,13 +7,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "start": "cross-env NODE_ENV=prod node index.js",
+    "dev": "cross-env NODE_ENV=dev nodemon index.js",
     "lint": "eslint .",
-    "test": "jest --verbose"
+    "test": "cross-env NODE_ENV=test jest --verbose --runInBand"
   },
   "keywords": [],
-  "author": "",
+  "author": "Grant Forsythe",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.0",
@@ -26,6 +26,7 @@
     "mongoose-unique-validator": "^3.1.0"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "eslint": "^8.2.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-node": "^4.1.0",
