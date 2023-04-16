@@ -1,0 +1,50 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "The backend for the notes web app",
+  "main": "index.js",
+  "scripts": {
+    "start": "cross-env NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
+    "lint": "eslint .",
+    "build:ui": "rm -rf build && cd ../frontend && npm run build",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push",
+    "test": "cross-env NODE_ENV=test jest --verbose --runInBand"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grantwforsythe/fullstackopen-notes.git"
+  },
+  "author": "Grant Forsythe",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-async-errors": "^3.1.1",
+    "express-jwt": "^8.4.1",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^6.10.0",
+    "mongoose-unique-validator": "^3.1.0",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.35.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "jest": "^29.5.0",
+    "nodemon": "^2.0.20",
+    "prettier": "^2.8.7",
+    "supertest": "^6.3.3"
+  },
+  "bugs": {
+    "url": "https://github.com/grantwforsythe/fullstackopen-notes/issues"
+  },
+  "homepage": "https://fullstackopen-notes.onrender.com/",
+  "jest": {
+    "testEnvironment": "node",
+    "globalTeardown": "./tests/teardown.js"
+  }
+}
