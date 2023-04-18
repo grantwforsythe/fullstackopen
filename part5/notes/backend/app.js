@@ -26,12 +26,12 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 app.use(loginRoutes);
-app.use('/api/notes', noteRoutes);
 
 // Authorization
 app.use(expressjwt({ secret: config.ACCESS_TOKEN, algorithms: ['HS256'] }));
 
 app.use('/api/users', userRoutes);
+app.use('/api/notes', noteRoutes);
 
 app.use(unknownEndpoint);
 app.use(errorHandler);
