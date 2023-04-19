@@ -3,7 +3,6 @@ require('express-async-errors');
 const morgan = require('morgan');
 const { expressjwt } = require('express-jwt');
 const cors = require('cors');
-const app = express();
 
 const config = require('./utils/config');
 
@@ -13,6 +12,8 @@ const errorHandler = require('./middleware/errorHandler');
 const noteRoutes = require('./routes/notes');
 const userRoutes = require('./routes/users');
 const loginRoutes = require('./routes/login');
+
+const app = express();
 
 // Access the static files in the build directory
 app.use(express.static('../frontend/build'));
