@@ -25,7 +25,7 @@ if (process.env.NODE_ENV !== 'test') {
   app.use(morgan('tiny'));
 }
 
-app.use(loginRoutes);
+app.use('/api', loginRoutes);
 
 // Authorization
 app.use(expressjwt({ secret: config.ACCESS_TOKEN, algorithms: ['HS256'] }));
