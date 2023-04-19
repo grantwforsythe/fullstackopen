@@ -6,6 +6,7 @@ import Footer from './components/Footer';
 import Notification from './components/Notification';
 
 import noteService from './services/notes';
+import loginService from './services/login';
 
 import './style/App.css';
 
@@ -18,6 +19,7 @@ const App = () => {
   const [errorMesage, setErrorMessage] = useState(null);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [user, setUser] = useState(null);
 
   // This is just to indicated when the component has rendered
   console.log('render');
@@ -79,42 +81,78 @@ const App = () => {
     setIsImportant(event.target.checked);
   };
 
-  const handleLogin = event => {
+  const handleLogin = async event => {
     event.preventDefault();
-    console.log(`Logging into user ${username}`);
+
+    try {
+      // eslint-disable-next-line no-shadow
+      const user = await loginService.login({
+        username,
+        password,
+      });
+
+      noteService.setToken(user.token);
+      setUser(user);
+      setUsername('');
+      setPassword('');
+    } catch (error) {
+      setErrorMessage('Wrong credentials');
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }
   };
+
+  const loginForm = () => (
+    <form onSubmit={handleLogin}>
+      <div>
+        <label htmlFor="username">
+          Username:
+          <input
+            id="username"
+            type="text"
+            value={username}
+            name="username"
+            onChange={({ target }) => setUsername(target.value)}
+          />
+        </label>
+      </div>
+      <div>
+        <label htmlFor="password">
+          Password:
+          <input
+            id="password"
+            type="text"
+            value={password}
+            name="password"
+            onChange={({ target }) => setPassword(target.value)}
+          />
+        </label>
+      </div>
+      <button type="submit">Login</button>
+    </form>
+  );
+
+  const noteForm = () => (
+    <div>
+      <p>{user.name} logged in</p>
+      <NoteForm
+        addNote={addNote}
+        isImportant={isImportant}
+        handleImportant={handleImportant}
+        newNote={newNote}
+        handleNoteChange={handleNoteChange}
+      />
+    </div>
+  );
+
+  console.log(loginForm());
 
   return (
     <div>
       <h1>Notes</h1>
       <Notification message={errorMesage} />
-      <form onSubmit={handleLogin}>
-        <div>
-          <label htmlFor="username">
-            Username:
-            <input
-              id="username"
-              type="text"
-              value={username}
-              name="username"
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="password">
-            Password:
-            <input
-              id="password"
-              type="text"
-              value={password}
-              name="password"
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </label>
-        </div>
-        <button type="submit">Login</button>
-      </form>
+      {user === null ? loginForm() : noteForm()}
       <div>
         <button type="button" onClick={() => setShowAll(!showAll)}>
           show {showAll ? 'important' : 'all'}
@@ -129,13 +167,6 @@ const App = () => {
           />
         ))}
       </ul>
-      <NoteForm
-        addNote={addNote}
-        isImportant={isImportant}
-        handleImportant={handleImportant}
-        newNote={newNote}
-        handleNoteChange={handleNoteChange}
-      />
       <Footer />
     </div>
   );
