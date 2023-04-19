@@ -21,15 +21,19 @@ const App = () => {
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
 
-  // This is just to indicated when the component has rendered
-  console.log('render');
-
-  // Run whenever a state changes
-  // The empty array indicates that this is only run once the component is initially rendered
-  // (The initial render of a component is referred to as 'mounting')
-  // A hook is just a sideeffect when something happens
+  // Populate all of the notes
   useEffect(() => {
     noteService.getAll().then(initialNotes => setNotes(initialNotes));
+  }, []);
+
+  // Check if user already logged in
+  useEffect(() => {
+    const loggedNoteAppUser = window.localStorage.getItem('loggedNoteAppUser');
+    if (loggedNoteAppUser) {
+      const loggedUser = JSON.parse(loggedNoteAppUser);
+      setUser(loggedUser);
+      noteService.setToken(loggedUser.token);
+    }
   }, []);
 
   const notesToShow = showAll ? notes : notes.filter(note => note.important);
@@ -85,14 +89,17 @@ const App = () => {
     event.preventDefault();
 
     try {
-      // eslint-disable-next-line no-shadow
-      const user = await loginService.login({
+      const loggedUser = await loginService.login({
         username,
         password,
       });
 
-      noteService.setToken(user.token);
-      setUser(user);
+      window.localStorage.setItem(
+        'loggedNoteAppUser',
+        JSON.stringify(loggedUser)
+      );
+      noteService.setToken(loggedUser.token);
+      setUser(loggedUser);
       setUsername('');
       setPassword('');
     } catch (error) {
@@ -101,6 +108,12 @@ const App = () => {
         setErrorMessage(null);
       }, 5000);
     }
+  };
+
+  const handleLogout = event => {
+    event.preventDefault();
+    window.localStorage.removeItem('loggedNoteAppUser');
+    setUser(null);
   };
 
   const loginForm = () => (
@@ -167,6 +180,11 @@ const App = () => {
           />
         ))}
       </ul>
+      {user !== null && (
+        <button type="button" onClick={handleLogout}>
+          Logout
+        </button>
+      )}
       <Footer />
     </div>
   );
