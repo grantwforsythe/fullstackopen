@@ -53,6 +53,7 @@ describe('List helper', () => {
 });
 
 describe('Creating blogs', () => {
+  // TODO: Create User
   test('Create new blog and set default like value', async () => {
     const newBlog = {
       _id: '5a422a851b54a676634d17c5',

@@ -4,7 +4,13 @@ const config = require('../utils/config');
 const User = require('../models/user');
 
 const getAll = async (request, response) => {
-  const users = await User.find({}).select('username');
+  const users = await User.find({})
+    .select({
+      name: 1,
+      username: 1,
+      blogs: 1,
+    })
+    .populate('blogs', { user: 0 });
   response.json(users);
 };
 

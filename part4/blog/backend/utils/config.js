@@ -13,13 +13,14 @@ const getURI = () => {
   }
 };
 
-const { PORT } = process.env;
+const { PORT, ACCESS_TOKEN } = process.env;
 const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS, 10);
 
 const MONGODB_URI = getURI();
 
 module.exports = {
   PORT,
+  ACCESS_TOKEN,
   MONGODB_URI,
   SALT_ROUNDS,
 };
