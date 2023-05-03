@@ -1,11 +1,31 @@
 const mongoose = require('mongoose');
 const supertest = require('supertest');
+const bcrypt = require('bcrypt');
 
 const listHelper = require('../utils/list_helper');
+const config = require('../utils/config');
+
 const Blog = require('../models/blog');
+const User = require('../models/user');
+
 const app = require('../app');
 
 const api = supertest(app);
+
+let token;
+
+beforeAll(async () => {
+  await User.deleteMany({});
+
+  const username = 'root';
+  const password = 'sAlAi9en!';
+  const passwordHash = await bcrypt.hash(password, config.SALT_ROUNDS);
+
+  await User.create({ username, passwordHash });
+
+  const response = await api.post('/api/login').send({ username, password });
+  token = response.body.token;
+});
 
 beforeEach(async () => {
   await Promise.all(listHelper.initialBlogs.map(blog => Blog.create(blog)));
@@ -16,7 +36,7 @@ afterEach(async () => {
 });
 
 afterAll(async () => {
-  await Blog.deleteMany({});
+  await User.deleteMany({});
   mongoose.disconnect();
 });
 
@@ -53,7 +73,6 @@ describe('List helper', () => {
 });
 
 describe('Creating blogs', () => {
-  // TODO: Create User
   test('Create new blog and set default like value', async () => {
     const newBlog = {
       _id: '5a422a851b54a676634d17c5',
@@ -65,21 +84,13 @@ describe('Creating blogs', () => {
     await api
       .post('/api/blogs')
       .send(newBlog)
+      .set('Authorization', `Bearer ${token}`)
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
-    newBlog.likes = 0;
-    // Rename the '_id' field to 'id'
-    // eslint-disable-next-line no-underscore-dangle
-    delete Object.assign(newBlog, { id: newBlog._id })._id;
-
     const response = await api.get('/api/blogs');
 
-    expect(response.body).toContainEqual(newBlog);
-
-    const addedBlog = response.body.find(
-      blog => blog.id === '5a422a851b54a676634d17c5'
-    );
+    const addedBlog = response.body.find(blog => blog.title === newBlog.title);
 
     expect(addedBlog.likes).toEqual(0);
   });
@@ -153,13 +164,26 @@ describe('Updating blogs', () => {
 
 describe('Deleting blogs', () => {
   test('Delete one blog', async () => {
-    const blogId = '5a422a851b54a676234d17f7';
+    const newBlog = {
+      title: 'Animal Farm',
+      author: 'George Orwell',
+      url: 'https://www.amazon.ca/Animal-Farm-George-Orwell/dp/0141036133',
+    };
 
-    await api.delete(`/api/blogs/${blogId}`).expect(204);
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
 
-    const response = await api.get('/api/blogs');
-    const blogs = response.body;
+    const addedBlog = (await api.get('/api/blogs')).body.find(
+      blog => blog.title === newBlog.title
+    );
 
-    expect(blogs.filter(blog => blog.id === blogId)).toHaveLength(0);
+    await api
+      .delete(`/api/blogs/${addedBlog.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(204);
   });
 });

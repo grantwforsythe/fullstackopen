@@ -18,7 +18,5 @@ module.exports = async (request, response) => {
   const payload = { username: user.username, id: user.id };
   const token = jwt.sign(payload, config.ACCESS_TOKEN, { expiresIn: 60 * 60 });
 
-  return response
-    .status(200)
-    .send({ token, username: user.username, name: user.name });
+  return response.status(200).send({ token });
 };

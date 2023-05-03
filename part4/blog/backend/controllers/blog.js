@@ -1,5 +1,4 @@
 const Blog = require('../models/blog');
-const User = require('../models/user');
 
 const getAll = async (request, response) => {
   const blog = await Blog.find({}).populate('user', {
@@ -13,15 +12,20 @@ const getAll = async (request, response) => {
 const addOne = async (request, response) => {
   const { title, author, url, likes } = request.body;
 
-  const user = await User.findById(request.auth.id);
-  const blog = await Blog.create({
-    title,
-    author,
-    url,
-    likes,
-    user: user.id,
-  });
-  response.status(201).json(blog);
+  try {
+    const blog = await Blog.create({
+      title,
+      author,
+      url,
+      likes,
+      user: request.user.id,
+    });
+
+    response.status(201).json(blog);
+  } catch (error) {
+    // TypeError: Cannot read properties of undefined
+    response.status(400).json({ error });
+  }
 };
 
 const getById = async (request, response) => {
@@ -41,7 +45,7 @@ const updateById = async (request, response) => {
 
 const deleteById = async (request, response) => {
   const blog = await Blog.findById(request.params.id).where({
-    user: request.auth.id,
+    user: request.user.id,
   });
 
   if (blog) {
