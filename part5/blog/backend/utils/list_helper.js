@@ -1,4 +1,4 @@
-const initialBlogs = [
+export const initialBlogs = [
   {
     _id: '5a422a851b54a676234d17f7',
     title: 'React patterns',
@@ -49,20 +49,14 @@ const initialBlogs = [
   },
 ];
 
-const totalLikes = blogs => {
+export const totalLikes = blogs => {
   const reducer = (total, blog) => total + blog.likes;
 
   return blogs.reduce(reducer, 0);
 };
 
-const favouriteBlog = blogs => {
+export const favouriteBlog = blogs => {
   const reducer = (blog1, blog2) => (blog1.likes > blog2.likes ? blog1 : blog2);
 
   return blogs.reduce(reducer);
-};
-
-module.exports = {
-  initialBlogs,
-  totalLikes,
-  favouriteBlog,
 };

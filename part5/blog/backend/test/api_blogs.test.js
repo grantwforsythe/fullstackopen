@@ -1,16 +1,16 @@
-const mongoose = require('mongoose');
-const supertest = require('supertest');
-const bcrypt = require('bcrypt');
+import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
+import request from 'supertest';
 
-const listHelper = require('../utils/list_helper');
-const config = require('../utils/config');
+import * as listHelper from '../utils/list_helper';
+import { SALT_ROUNDS } from '../utils/config';
 
-const Blog = require('../models/blog');
-const User = require('../models/user');
+import Blog from '../models/blog';
+import User from '../models/user';
 
-const app = require('../app');
+import app from '../app';
 
-const api = supertest(app);
+const api = request(app);
 
 let token;
 
@@ -19,7 +19,7 @@ beforeAll(async () => {
 
   const username = 'root';
   const password = 'sAlAi9en!';
-  const passwordHash = await bcrypt.hash(password, config.SALT_ROUNDS);
+  const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
 
   await User.create({ username, passwordHash });
 

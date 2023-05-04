@@ -1,16 +1,16 @@
-const jwt = require('jsonwebtoken');
-const config = require('../utils/config');
-const User = require('../models/user');
+import jwt from 'jsonwebtoken';
+import { ACCESS_TOKEN } from '../utils/config';
+import User from '../models/user';
 
 /**
  * Sets the request.user property.
  */
-module.exports = async (request, response, next) => {
+export default async (request, response, next) => {
   if (request.headers.authorization) {
     // e.g. 'Authorization Bearer ${token}'
     const token = jwt.verify(
       request.headers.authorization.split(' ')[1],
-      config.ACCESS_TOKEN
+      ACCESS_TOKEN
     );
 
     if (token) {

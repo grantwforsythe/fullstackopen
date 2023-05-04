@@ -1,6 +1,6 @@
-const Blog = require('../models/blog');
+import Blog from '../models/blog';
 
-const getAll = async (request, response) => {
+export const getAll = async (request, response) => {
   const blog = await Blog.find({}).populate('user', {
     username: 1,
     name: 1,
@@ -9,7 +9,7 @@ const getAll = async (request, response) => {
   response.json(blog);
 };
 
-const addOne = async (request, response) => {
+export const addOne = async (request, response) => {
   const { title, author, url, likes } = request.body;
 
   try {
@@ -28,12 +28,12 @@ const addOne = async (request, response) => {
   }
 };
 
-const getById = async (request, response) => {
+export const getById = async (request, response) => {
   const blog = await Blog.findById(request.params.id);
   response.json(blog);
 };
 
-const updateById = async (request, response) => {
+export const updateById = async (request, response) => {
   const blog = await Blog.findByIdAndUpdate(
     request.params.id,
     { ...request.body },
@@ -43,7 +43,7 @@ const updateById = async (request, response) => {
   response.json(blog);
 };
 
-const deleteById = async (request, response) => {
+export const deleteById = async (request, response) => {
   const blog = await Blog.findById(request.params.id).where({
     user: request.user.id,
   });
@@ -52,12 +52,4 @@ const deleteById = async (request, response) => {
     await blog.delete();
     response.status(204).json({ message: `${blog.id} has been deleted` });
   }
-};
-
-module.exports = {
-  getAll,
-  addOne,
-  getById,
-  updateById,
-  deleteById,
 };

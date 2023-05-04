@@ -1,4 +1,6 @@
-require('dotenv').config();
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 const getURI = () => {
   switch (process.env.NODE_ENV) {
@@ -13,14 +15,7 @@ const getURI = () => {
   }
 };
 
-const { PORT, ACCESS_TOKEN } = process.env;
-const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS, 10);
+export const { PORT, ACCESS_TOKEN } = process.env;
+export const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS, 10);
 
-const MONGODB_URI = getURI();
-
-module.exports = {
-  PORT,
-  ACCESS_TOKEN,
-  MONGODB_URI,
-  SALT_ROUNDS,
-};
+export const MONGODB_URI = getURI();

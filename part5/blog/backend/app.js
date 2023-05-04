@@ -1,15 +1,15 @@
-const express = require('express');
-require('express-async-errors');
+import express from 'express';
+import 'express-async-errors';
 
-const cors = require('cors');
-const cookieParser = require('cookie-parser');
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
-const blogsRouter = require('./routes/blogs');
-const usersRouter = require('./routes/user');
-const loginRouter = require('./routes/login');
+import blogsRouter from './routes/blogs';
+import usersRouter from './routes/user';
+import loginRouter from './routes/login';
 
-const userExtractor = require('./middleware/userExtractor');
-const errorHandler = require('./middleware/errorHandler');
+import userExtractor from './middleware/userExtractor';
+import errorHandler from './middleware/errorHandler';
 
 const app = express();
 
@@ -23,4 +23,4 @@ app.use('/api/users', usersRouter);
 
 app.use(errorHandler);
 
-module.exports = app;
+export default app;

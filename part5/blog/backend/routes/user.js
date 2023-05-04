@@ -1,10 +1,10 @@
-const express = require('express');
+import express from 'express';
+
+import { getAll, addOne } from '../controllers/user';
 
 const router = express.Router();
 
-const userController = require('../controllers/user');
+router.get('/', getAll);
+router.post('/', addOne);
 
-router.get('/', userController.getAll);
-router.post('/', userController.addOne);
-
-module.exports = router;
+export default router;

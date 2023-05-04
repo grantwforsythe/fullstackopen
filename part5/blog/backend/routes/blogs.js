@@ -1,14 +1,20 @@
-const express = require('express');
+import express from 'express';
+
+import {
+  getAll,
+  addOne,
+  getById,
+  updateById,
+  deleteById,
+} from '../controllers/blog';
 
 const router = express.Router();
 
-const blogController = require('../controllers/blog');
+router.get('/', getAll);
+router.post('/', addOne);
 
-router.get('/', blogController.getAll);
-router.post('/', blogController.addOne);
+router.get('/:id', getById);
+router.put('/:id', updateById);
+router.delete('/:id', deleteById);
 
-router.get('/:id', blogController.getById);
-router.put('/:id', blogController.updateById);
-router.delete('/:id', blogController.deleteById);
-
-module.exports = router;
+export default router;

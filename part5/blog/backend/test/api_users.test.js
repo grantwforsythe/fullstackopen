@@ -1,19 +1,19 @@
-const mongoose = require('mongoose');
-const supertest = require('supertest');
-const bcrypt = require('bcrypt');
+import mongoose from 'mongoose';
+import request from 'supertest';
+import bcrypt from 'bcrypt';
 
-const config = require('../utils/config');
-const User = require('../models/user');
-const app = require('../app');
+import { SALT_ROUNDS } from '../utils/config';
+import User from '../models/user';
+import app from '../app';
 
-const api = supertest(app);
+const api = request(app);
 
 beforeEach(async () => {
   await User.deleteMany({});
 
   const username = 'root';
   const password = 'sAlAi9en!';
-  const passwordHash = await bcrypt.hash(password, config.SALT_ROUNDS);
+  const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
 
   await User.create({ username, passwordHash });
 });
