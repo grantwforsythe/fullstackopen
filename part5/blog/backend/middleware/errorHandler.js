@@ -9,6 +9,6 @@ export default (error, request, response, next) => {
     case 'TokenExpiredError':
       return response.status(401).json({ error: 'token expired' });
     default:
-      next(error);
+      return next(error);
   }
 };
