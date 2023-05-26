@@ -13,9 +13,14 @@ const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
 
-app.use(cors());
+// Access the static files in the build directory
+app.use(express.static('../frontend/build'));
+// Parse request bodies in JSON format
 app.use(express.json());
+// Parse cookies
 app.use(cookieParser());
+// All requests from other origins
+app.use(cors());
 
 app.use('/api/login', loginRouter);
 app.use('/api/blogs', userExtractor, blogsRouter);
