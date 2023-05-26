@@ -1,10 +1,11 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-underscore-dangle */
-import mongoose from 'mongoose';
-import { MONGODB_URI } from '../utils/config';
+const mongoose = require('mongoose');
+
+const config = require('../utils/config');
 
 mongoose.set('strictQuery', false);
-mongoose.connect(MONGODB_URI);
+mongoose.connect(config.MONGODB_URI);
 
 const blogSchema = new mongoose.Schema({
   title: {
@@ -37,4 +38,4 @@ blogSchema.set('toJSON', {
   },
 });
 
-export default mongoose.model('Blog', blogSchema);
+module.exports = mongoose.model('Blog', blogSchema);

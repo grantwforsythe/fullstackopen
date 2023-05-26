@@ -1,9 +1,9 @@
-import bcrypt from 'bcrypt';
+const bcrypt = require('bcrypt');
 
-import { SALT_ROUNDS } from '../utils/config';
-import User from '../models/user';
+const config = require('../utils/config');
+const User = require('../models/user');
 
-export const getAll = async (request, response) => {
+const getAll = async (request, response) => {
   const users = await User.find({})
     .select({
       name: 1,
@@ -14,11 +14,13 @@ export const getAll = async (request, response) => {
   response.json(users);
 };
 
-export const addOne = async (request, response) => {
+const addOne = async (request, response) => {
   const { username, name, password } = request.body;
-  const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
+  const passwordHash = await bcrypt.hash(password, config.SALT_ROUNDS);
 
   const user = await User.create({ username, name, passwordHash });
 
   response.status(201).json(user);
 };
+
+module.exports = { getAll, addOne };

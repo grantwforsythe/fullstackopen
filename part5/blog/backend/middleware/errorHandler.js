@@ -1,4 +1,4 @@
-export default (error, request, response, next) => {
+module.exports = (error, request, response, next) => {
   switch (error.name) {
     case 'CastError':
       return response.status(400).send({ error: 'malformatted id' });

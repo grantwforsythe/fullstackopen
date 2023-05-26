@@ -1,10 +1,10 @@
-import jwt from 'jsonwebtoken';
-import bcrytp from 'bcrypt';
+const jwt = require('jsonwebtoken');
+const bcrytp = require('bcrypt');
 
-import { ACCESS_TOKEN } from '../utils/config';
-import User from '../models/user';
+const config = require('../utils/config');
+const User = require('../models/user');
 
-export default async (request, response) => {
+module.exports = async (request, response) => {
   const { username, password } = request.body;
 
   const user = await User.findOne({ username });
@@ -16,7 +16,7 @@ export default async (request, response) => {
   }
 
   const payload = { username: user.username, id: user.id };
-  const token = jwt.sign(payload, ACCESS_TOKEN, { expiresIn: 60 * 60 });
+  const token = jwt.sign(payload, config.ACCESS_TOKEN, { expiresIn: 60 * 60 });
 
   return response.status(200).send({ token });
 };

@@ -1,12 +1,12 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-param-reassign */
-import mongoose from 'mongoose';
-import uniqueValidator from 'mongoose-unique-validator';
+const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
 
-import { MONGODB_URI } from '../utils/config';
+const config = require('../utils/config');
 
 mongoose.set('strictQuery', false);
-mongoose.connect(MONGODB_URI);
+mongoose.connect(config.MONGODB_URI);
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -43,4 +43,4 @@ userSchema.set('toJSON', {
   },
 });
 
-export default mongoose.model('User', userSchema);
+module.exports = mongoose.model('User', userSchema);
