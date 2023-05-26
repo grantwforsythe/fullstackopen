@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { React, useState, useEffect } from 'react';
 import Blog from './components/Blog';
 import blogService from './services/blogs';
 
@@ -6,7 +6,7 @@ const App = () => {
   const [blogs, setBlogs] = useState([]);
 
   useEffect(() => {
-    blogService.getAll().then(blogs => setBlogs(blogs));
+    blogService.getAll().then(initialBlogs => setBlogs(initialBlogs));
   }, []);
 
   return (
