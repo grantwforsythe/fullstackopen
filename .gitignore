@@ -4,6 +4,7 @@
 .vscode/
 .env
 *.code-workspace
+**/.next
 
 # dependencies
 **/node_modules
