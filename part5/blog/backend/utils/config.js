@@ -5,11 +5,11 @@ const getURI = () => {
     case 'prod':
       return process.env.MONGODB_URI;
     case 'dev':
-      return process.env.DEV_MONGODB_URI;
+      return process.env.MONGODB_DEV_URI;
     case 'test':
-      return process.env.TEST_MONGODB_URI;
+      return process.env.MONGODB_TEST_URI;
     default:
-      return process.env.DEV_MONGODB_URI;
+      return process.env.MONGODB_DEV_URI;
   }
 };
 

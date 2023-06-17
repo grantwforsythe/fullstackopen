@@ -13,8 +13,8 @@ const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
 
-// Access the static files in the build directory
-app.use(express.static('../frontend/build'));
+// Access the static files in the out directory
+app.use(express.static('../frontend/out'));
 // Parse request bodies in JSON format
 app.use(express.json());
 // Parse cookies
