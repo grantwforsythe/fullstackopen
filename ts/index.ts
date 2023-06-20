@@ -1,18 +1,25 @@
-type Operation = "multiply" | "add" | "divide";
-type Result = number | string;
+interface Arguments {
+  a: number;
+  b: number;
+}
 
-const calculator = (a: number, b: number, operator: Operation): Result => {
-  switch (operator) {
-    case "multiply":
-      return a * b;
-    case "add":
-      return a + b;
-    case "divide":
-      if (b === 0) throw new Error("Can't divide by 0");
-      return a / b;
-    default:
-      throw new Error("Invalid operation");
+const parseArguments = (args: string[]): Arguments => {
+  if (args.length < 4) throw new Error("Too few values");
+  if (args.length > 4) throw new Error("Too many values");
+
+  if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
+    return {
+      a: Number(args[2]),
+      b: Number(args[3]),
+    };
+  } else {
+    throw new Error("Invalid arguments");
   }
 };
 
-console.log(`2 + 4 = ${calculator(2, 4, "add")}`);
+const add = (a: number, b: number): number => a + b;
+
+const { a, b } = parseArguments(process.argv);
+const result: number = add(a, b);
+
+console.log(`${a} + ${b} = ${result}`);
