@@ -1,4 +1,4 @@
-type Operator = "+" | "-" | "*" | "/";
+export type Operator = "+" | "-" | "*" | "/";
 
 interface Arguments {
   value1: number;

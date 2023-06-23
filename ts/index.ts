@@ -1,25 +1,37 @@
-interface Arguments {
-  a: number;
-  b: number;
-}
+import { calculator, Operator } from "./calculator";
+import express from "express";
+const app = express();
 
-const parseArguments = (args: string[]): Arguments => {
-  if (args.length < 4) throw new Error("Too few values");
-  if (args.length > 4) throw new Error("Too many values");
+app.use(express.json());
 
-  if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
-    return {
-      a: Number(args[2]),
-      b: Number(args[3]),
-    };
-  } else {
-    throw new Error("Invalid arguments");
+app.get("/ping", (_request, response) => {
+  response.send("pong");
+});
+
+app.post("/calculate", (request, response) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const { value1, value2, operator } = request.body;
+
+  if (!value1 || isNaN(Number(value1))) {
+    return response
+      .status(400)
+      .send({ error: `${value1} is invalid because it is not number` });
+  } else if (!value2 || isNaN(Number(value2))) {
+    return response
+      .status(400)
+      .send({ error: `${value2} is invalid because it is not number` });
   }
-};
 
-const add = (a: number, b: number): number => a + b;
+  const result = calculator(
+    Number(value1),
+    Number(value2),
+    operator as Operator
+  );
+  return response.send({ result });
+});
 
-const { a, b } = parseArguments(process.argv);
-const result: number = add(a, b);
+const PORT = 3003;
 
-console.log(`${a} + ${b} = ${result}`);
+app.listen(PORT, () => {
+  console.log(`Live on: http://localhost:${PORT}`);
+});
