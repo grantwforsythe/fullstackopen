@@ -1,4 +1,4 @@
-FROM node:20.9.0
+FROM node:20.9.0-bullseye-slim
 
 RUN apt-get update && apt-get upgrade -y
 
