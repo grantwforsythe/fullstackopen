@@ -1,4 +1,4 @@
-FROM node:20.9.0
+FROM node:20.9.0-bullseye-slim
 
 RUN apt-get update && apt-get upgrade -y
 
@@ -12,4 +12,4 @@ RUN npm ci --only=production
 
 USER node
 
-CMD ["npm", "start"]
+CMD ["node", "./bin/www"]
