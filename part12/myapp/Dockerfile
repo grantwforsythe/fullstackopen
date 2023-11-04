@@ -13,4 +13,4 @@ RUN npm ci --only=production
 
 USER node
 
-CMD ["node", " app.js"]
+CMD ["node", "app.js"]
