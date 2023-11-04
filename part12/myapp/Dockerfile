@@ -1,9 +1,16 @@
-FROM node:16
+FROM node:20.9.0-bullseye-slim
+
+RUN apt-get update && apt-get upgrade -y
+
+ENV NODE_ENV=production
+ENV DEBUG=myapp:*
 
 WORKDIR /usr/src/app
 
-COPY . .
+COPY --chown=node:node . .
 
-RUN npm install
+RUN npm ci --only=production
 
-CMD DEBUG=myapp:* npm start
+USER node
+
+CMD ["node", " app.js"]
